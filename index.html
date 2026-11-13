@@ -1,5 +1,8 @@
 <!doctype html><html data-theme="light" style="color-scheme:light"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>TBFlow · Nigeria community edition</title>
+<meta name="description" content="Clickable prototype of TBFlow: community TB screening, outreach planning and tracking each person from first cough to cure. Start the 5-minute guided demo.">
+<meta property="og:title" content="TBFlow · Nigeria community edition prototype">
+<meta property="og:description" content="Community TB screening, outreach planning and follow-up from first cough to cure. 5-minute guided demo.">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -668,6 +671,44 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)
 .fphone .scr{background:#DDE8D5;color:#1E2B1A;border-radius:6px;min-height:200px;padding:8px;font-family:var(--f-mono);font-size:11px;line-height:15px}
 .fphone .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px}
 .fphone .keys span{height:22px;border-radius:8px;background:var(--ink-muted)}
+
+/* ---------- Guided demo ---------- */
+#tour{position:fixed;right:20px;bottom:20px;z-index:80;width:360px;max-width:calc(100vw - 24px);background:var(--surface);border:1px solid var(--border-subtle);border-radius:16px;box-shadow:var(--shadow-pop);padding:14px 16px 14px;font-size:.9375rem}
+#tour[hidden]{display:none}
+.tour-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tour-step{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--primary)}
+.tour-x,.tour-exit{background:none;border:0;color:var(--ink-muted);font:inherit;font-size:.8125rem;font-weight:600;cursor:pointer;padding:6px 4px;border-radius:8px}
+.tour-x:hover,.tour-exit:hover{color:var(--ink)}
+.tour-bar{height:4px;background:var(--data-track);border-radius:999px;margin:8px 0 10px;overflow:hidden}
+.tour-bar i{display:block;height:100%;background:var(--primary);border-radius:999px}
+.tour-h{font-size:1.0625rem;line-height:1.35;font-weight:700;margin:0 0 4px;outline:none}
+.tour-p{margin:0;color:var(--ink-secondary);line-height:1.5}
+.tour-try{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--accent-tint);color:var(--ink);font-size:.875rem;line-height:1.45}
+.tour-try b{color:var(--accent-ink)}
+.tour-btns{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.tour-btns .tour-exit{margin-left:auto}
+.tour-pill{display:none}
+#tour.min{width:auto;padding:0;border:0;background:none;box-shadow:none}
+#tour.min>*:not(.tour-pill){display:none}
+#tour.min .tour-pill{display:inline-flex;align-items:center;height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;box-shadow:var(--shadow-pop);cursor:pointer}
+body.touring{padding-bottom:220px}
+.tour-scrim{position:fixed;inset:0;z-index:90;background:var(--scrim, rgba(16,16,16,.48));display:grid;place-items:center;padding:16px}
+.tour-card{background:var(--surface);border-radius:20px;box-shadow:var(--shadow-pop);max-width:480px;width:100%;padding:28px}
+.tour-card h2{font-size:1.625rem;line-height:1.2;font-weight:800;letter-spacing:-.02em;margin:14px 0 8px}
+.tour-card p{color:var(--ink-secondary);line-height:1.55;margin:0 0 4px}
+.tour-card .tour-btns{margin:18px 0 12px}
+.tour-brand .pbrand{color:var(--ink);font-weight:800}
+.pbtn.tour-launch{font-weight:600}
+@media (max-width:859px){.pbtn.tour-launch{display:none}}
+@media (max-width:859px){
+  #tour{left:8px;right:8px;width:auto;max-width:none;bottom:calc(72px + env(safe-area-inset-bottom,0px));padding:12px 14px;max-height:46vh;overflow:auto}
+  #tour.min{left:auto;right:12px}
+  #tour.top:not(.min){top:72px;bottom:auto}
+  .tour-h{font-size:1rem}
+  body.touring{padding-bottom:300px}
+  .tour-card{padding:22px}
+  .tour-card .tour-btns .btn{flex:1 1 100%}
+}
 </style>
 <div id="root"></div>
 <div id="modal" class="modal" hidden></div>
@@ -1827,6 +1868,7 @@ function render() {
     <button class="pbtn" data-act="story" data-arg="-1" aria-label="Previous screen"${s.i === 0 ? ' disabled' : ''}>${ICON.prev.replace('<svg', '<svg width="16" height="16"')}<span class="hide-s">Prev</span></button>
     <button class="pbtn" data-act="story" data-arg="1" aria-label="Next screen"${s.i === SCREENS.length - 1 ? ' disabled' : ''}><span class="hide-s">Next</span>${ICON.next.replace('<svg', '<svg width="16" height="16"')}</button>
     <button class="pbtn" data-act="drawer" aria-label="All screens">${ICON.menu.replace('<svg', '<svg width="16" height="16"')}<span class="hide-s">Screens</span></button>
+    <button class="pbtn tour-launch" data-act="tourStart" aria-label="Guided demo"><span class="hide-s">Guided</span>demo</button>
     <label class="rolepick-l hide-s small" for="rolepick" style="opacity:.7">Viewing as</label><select id="rolepick" data-live="role" aria-label="Viewing as">${Object.keys(ROLES).map(k => `<option value="${k}"${k === S.role ? ' selected' : ''}>${ROLES[k].name} · ${ROLES[k].job}</option>`).join('')}</select></header>`;
   let body;
   const v = s.view();
@@ -1897,7 +1939,7 @@ window.addEventListener('hashchange', () => { if (suppress) { suppress = false; 
 function drawer() {
   const d = $('#drawer');
   d.innerHTML = `<div class="panel" role="dialog" aria-modal="true" aria-labelledby="dr-t"><div class="row between"><h2 id="dr-t">All screens</h2><button class="iconbtn" data-act="drawerClose" aria-label="Close">${ICON.x}</button></div>
-  <p class="small muted">Jumping to a screen sets up the sample data it needs. Use Next to follow the story; tap buttons and links to use it like the real app.</p>${btn('Restart the demo', { act: 'reset', kind: 'secondary', sm: true })}
+  <p class="small muted">Jumping to a screen sets up the sample data it needs. Use Next to follow the story; tap buttons and links to use it like the real app.</p><div class="row" style="gap:8px;flex-wrap:wrap">${btn('Start the guided demo', { act: 'tourBegin', sm: true })}${btn('Reset sample data', { act: 'reset', kind: 'secondary', sm: true })}</div>
   ${Object.keys(CH).map(k => `<div class="ch"><h3><b>${k}</b>${CH[k]}</h3>${SCREENS.filter(s => s.ch === k).map(s => `<button data-story="${s.r}"${s === CUR ? ' aria-current="true"' : ''}><b>${s.id}</b><span>${esc(s.name)}</span></button>`).join('')}</div>`).join('')}</div>`;
   d.hidden = false; d.querySelector('button').focus();
 }
@@ -2135,10 +2177,94 @@ function drawCxr() {
   x.drawImage(CXR_IMG, (W - w) / 2, (H - h) / 2, w, h);
 }
 
+
+/* ================= Guided demo ================= */
+const TOUR = [
+  ['ctw-home', 'Community screening', 'Meet Ama, a community TB worker', 'Ama screens people where they live, on her own phone, even without signal. Her home shows how many people are waiting in each community she covers.', ''],
+  ['screen-symptoms', 'Community screening', 'Four questions, then urgent signs', 'Ama asks the standard TB symptom questions, then checks for urgent signs. The answers decide what happens next.', 'Answer Yes to "Coughing blood", then tap See result.'],
+  ['screen-waiting', 'Community screening', 'Not urgent: join the waiting list', 'Nkoyo has symptoms but no urgent signs. She joins Ikoneto\'s waiting list for the next outreach. Ama reads her the data-use notice, and her SMS never names TB.', ''],
+  ['screen-urgent', 'Community screening', 'Urgent: referred today', 'Bassey is coughing blood, so he doesn\'t wait. He gets an SMS with the nearest testing site, and his loop opens with Ama as owner and a deadline.', ''],
+  ['outreach-alert', 'Outreach', 'A community is ready', 'Okoyong has reached 20 people waiting, so the outreach lead is alerted. The lock screen never names a place, a person or TB.', ''],
+  ['planner', 'Outreach', 'Where to go next', 'Communities are sorted by urgency: wait limit passed first, then ready, then building up. The rule is 20 people or 14 days, set by the NGO.', ''],
+  ['schedule', 'Outreach', 'One form plans the visit', 'Date, venue, a team with a portable X-ray and sputum collection, and everyone on the list told by SMS. The community leader is told so he can announce it.', ''],
+  ['outreach-day', 'Outreach', 'No one left unattended', 'On the day, people are checked in and seen in priority order. Walk-ins join the queue, and anyone waiting over 2 hours is flagged.', 'Tap Add walk-in, or switch to Not here.'],
+  ['report', 'The patient loop', 'The X-ray is read remotely', 'A radiologist reads the film from anywhere and fills a structured TB report, so results no longer wait for a visit day. The same loop runs for people tested at outreach or at a clinic. Here is Effiong Edet\'s.', ''],
+  ['record', 'The patient loop', 'One loop, eight steps', 'Every person\'s care is a loop: report, acknowledgement, telling the patient, sample, lab result, referral if needed, treatment, closure. Each step has an owner and a deadline.', ''],
+  ['phone', 'The patient loop', 'Telling the patient, privately', 'Effiong gets a plain SMS on any phone. Replying 1 completes the step; replying 2 asks for a call.', 'Tap Reply 1.', 'top'],
+  ['rr', 'Lab and treatment', 'Urgent results can\'t be missed', 'A drug-resistant result raises an urgent alert to the clinician and the TB supervisor at once.', ''],
+  ['board', 'Coordination', 'Late steps are seen', 'The coordinator sees every open loop and which step is late. A late step goes to its owner, then the facility lead, then the LGA TB supervisor.', ''],
+  ['closed', 'Closure', 'Closed with evidence', 'A loop closes only when there is proof of the outcome, and the data is ready for national TB reporting.', '']
+];
+let TI = -1, tourHash = false;
+function tourEl() {
+  let el = document.getElementById('tour');
+  if (!el) { el = document.createElement('section'); el.id = 'tour'; el.setAttribute('aria-label', 'Guided demo'); document.body.appendChild(el); }
+  return el;
+}
+function tourSetHash(h) { tourHash = true; location.hash = h; setTimeout(() => { tourHash = false; }, 60); }
+function tourGo(i) {
+  if (i < 0) i = 0;
+  if (i >= TOUR.length) { tourEnd(); return; }
+  TI = i; const t = TOUR[i];
+  closeTourCard();
+  go(t[0], { story: true, noFocus: true });
+  tourSetHash('tour-' + (i + 1));
+  const el = tourEl(); el.hidden = false; el.classList.remove('min'); el.classList.toggle('top', t[5] === 'top');
+  el.innerHTML = `<div class="tour-top"><span class="tour-step">Step ${i + 1} of ${TOUR.length} · ${t[1]}</span><button type="button" class="tour-x" data-act="tourMin" aria-label="Hide the guide">Hide</button></div>
+    <div class="tour-bar" aria-hidden="true"><i style="width:${Math.round((i + 1) / TOUR.length * 100)}%"></i></div>
+    <h2 class="tour-h" tabindex="-1">${t[2]}</h2><p class="tour-p">${t[3]}</p>${t[4] ? `<p class="tour-try"><b>Try this:</b> ${t[4]}</p>` : ''}
+    <div class="tour-btns"><button type="button" class="btn btn-secondary btn-sm" data-act="tourPrev"${i === 0 ? ' disabled' : ''}>Back</button><button type="button" class="btn btn-primary btn-sm" data-act="tourNext">${i === TOUR.length - 1 ? 'Finish' : 'Next'}</button><button type="button" class="tour-exit" data-act="tourExit">Exit demo</button></div>
+    <button type="button" class="tour-pill" data-act="tourMax" aria-label="Show the guide">Guide · step ${i + 1} of ${TOUR.length}</button>`;
+  document.body.classList.add('touring');
+  const h = el.querySelector('.tour-h'); if (h) h.focus({ preventScroll: true });
+}
+function tourExitNow() { TI = -1; const el = tourEl(); el.hidden = true; el.innerHTML = ''; document.body.classList.remove('touring'); }
+function tourCard(html) {
+  closeTourCard();
+  const d = document.createElement('div'); d.id = 'tourcard'; d.className = 'tour-scrim';
+  d.innerHTML = `<div class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tour-card-h">${html}</div>`;
+  document.body.appendChild(d);
+  const f = d.querySelector('.btn-primary'); if (f) f.focus();
+}
+function closeTourCard() { const d = document.getElementById('tourcard'); if (d) d.remove(); }
+function tourStartCard() {
+  tourCard(`<div class="tour-brand">${PBRAND}</div><h2 id="tour-card-h">See TBFlow in 5 minutes</h2>
+    <p>TBFlow helps community health workers and clinic staff in Nigeria find people with TB symptoms, bring testing to their communities, and follow each person from first cough to cure.</p>
+    <div class="tour-btns"><button type="button" class="btn btn-primary" data-act="tourBegin">Start the guided demo</button><button type="button" class="btn btn-secondary" data-act="tourFree">Explore freely</button></div>
+    <p class="small muted">14 short steps. Sample data from Cross River State. All names are fictional.</p>`);
+}
+function tourEnd() {
+  tourExitNow();
+  tourCard(`<div class="tour-brand">${PBRAND}</div><h2 id="tour-card-h">That's TBFlow.</h2>
+    <p>From a cough in the community to a closed loop: every person tracked, every step owned, and no one waiting too long.</p>
+    <div class="tour-btns"><button type="button" class="btn btn-primary" data-act="tourAll">Explore all screens</button><button type="button" class="btn btn-secondary" data-act="tourBegin">Restart the demo</button></div>`);
+}
+Object.assign(ACT, {
+  tourStart: () => tourStartCard(),
+  tourBegin: () => { closeTourCard(); $('#drawer').hidden = true; tourGo(0); },
+  tourFree: () => { closeTourCard(); },
+  tourNext: () => tourGo(TI + 1),
+  tourPrev: () => tourGo(TI - 1),
+  tourExit: () => { tourExitNow(); toast('Guided demo closed. Use Guided demo in the top bar to start it again.'); },
+  tourMin: () => { tourEl().classList.add('min'); },
+  tourMax: () => { tourEl().classList.remove('min'); },
+  tourAll: () => { closeTourCard(); go('site', { story: true }); drawer(); }
+});
+window.addEventListener('hashchange', () => {
+  if (tourHash) return;
+  const m = location.hash.match(/^#tour-(\d+)$/); if (m) tourGo(parseInt(m[1], 10) - 1);
+});
+document.addEventListener('keydown', e => {
+  if (TI < 0 || e.target.closest('input,select,textarea')) return;
+  if (e.key === 'Escape') { const el = tourEl(); if (!el.classList.contains('min')) el.classList.add('min'); }
+});
+
 /* ---------- boot ---------- */
 (function boot() {
-  const r = location.hash.slice(1);
+  const r = location.hash.slice(1), m = r.match(/^tour-(\d+)$/);
+  if (m) { go('site', { story: true, noFocus: true }); tourGo(Math.min(TOUR.length, parseInt(m[1], 10)) - 1); return; }
   go(BY[r] ? r : 'site', { story: true, noFocus: true });
+  if (!BY[r]) tourStartCard();
 })();
 </script>
 
